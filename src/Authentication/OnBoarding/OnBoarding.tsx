@@ -1,10 +1,11 @@
-import React, {useRef} from 'react'
+import React, { useRef } from 'react'
 import { View, Text, Slider, StyleSheet, Dimensions } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { useValue, interpolateColor, onScrollEvent } from "react-native-redash";
-import Animated, { interpolate, Value, multiply } from 'react-native-reanimated';
+import { useValue, interpolateColor, onScrollEvent, useScrollHandler, scrollHandler } from "react-native-redash";
+import Animated, { interpolate, Value, multiply, divide, sub } from 'react-native-reanimated';
 import Slide, { SLIDE_HEIGHT } from './Slide';
 import SubSlide from './SubSlide';
+import Dot from './Dot';
 
 const { width, height } = Dimensions.get("window");
 
@@ -15,7 +16,8 @@ const styles = StyleSheet.create({
     },
     slider: {
         height: SLIDE_HEIGHT,
-        borderBottomRightRadius: 75
+        borderBottomRightRadius: 75,
+
     },
     footer: {
         flex: 1
@@ -24,25 +26,58 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'white',
         borderTopLeftRadius: 75,
+    },
+    pagination: {
+        ...StyleSheet.absoluteFillObject,
+        height: 75,
         flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        // backgroundColor: 'cyan'
     }
 
 })
 
 const slides = [
-    { label: 'Relaxed', subLabel: 'Where does it come from?', desc: '"Lorem ipsum dolor sit amet, consectetur adipiscing elit', color: '#BFE3F5' },
-    { label: 'Playfull', subLabel: 'Where does it come from?', desc: '"Lorem ipsum dolor sit amet, consectetur adipiscing elit', color: '#BEECC4' },
-    { label: 'Exentric', subLabel: 'Where does it come from?', desc: '"Lorem ipsum dolor sit amet, consectetur adipiscing elit', color: '#FFE4D9' },
-    { label: 'Funky', subLabel: 'Where does it come from?', desc: '"Lorem ipsum dolor sit amet, consectetur adipiscing elit', color: '#FFDDDD' },
+    {
+        label: 'Relaxed',
+        subLabel: 'Where does it come from?',
+        desc: '"Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+        color: '#BFE3F5',
+        picture: require('../../../assets/1.png')
+    },
+    {
+        label: 'Playfull',
+        subLabel: 'Where does it come from?',
+        desc: '"Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+        color: '#BEECC4',
+        picture: require('../../../assets/2.png')
+
+    },
+    {
+        label: 'Exentric',
+        subLabel: 'Where does it come from?',
+        desc: '"Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+        color: '#FFE4D9',
+        picture: require('../../../assets/3.png')
+
+    },
+    {
+        label: 'Funky',
+        subLabel: 'Where does it come from?',
+        desc: '"Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+        color: '#FFDDDD',
+        picture: require('../../../assets/4.png')
+
+    },
 ]
 
 
 const OnBoarding = () => {
 
-    const x = new Value(0);
-    const scroll = useRef<Animated.ScrollView>(null); 
+    const scroll = useRef<Animated.ScrollView>(null);
     //TODO:useScrollEvent
-    const onScroll = onScrollEvent({ x });
+    const { scrollHandler, x } = useScrollHandler();
     const backgroundColor = interpolateColor(x, {
         inputRange: slides.map((item, index) => index * width),
         outputRange: slides.map((item, index) => item.color)
@@ -50,16 +85,21 @@ const OnBoarding = () => {
     return (
         <View style={styles.container}>
             <Animated.View style={[styles.slider, { backgroundColor }]}>
+
                 <Animated.ScrollView
-                    ref = {scroll}
-                    horizontal snapToInterval={width}
+                    // onScroll={() => {
+                    //     console.log('gia tri cua x , ', x);
+                    // }}
+                    ref={scroll}
+                    horizontal
+                    snapToInterval={width}
                     decelerationRate="fast"
                     showsHorizontalScrollIndicator={false}
                     bounces={false}
                     scrollEventThrottle={1}
-                    {...{ onScroll }}
+                    {...scrollHandler}
                 >
-                    {slides.map((item, index) => <Slide right={!(index % 2)} key={index} label={item.label} />)}
+                    {slides.map((item, index) => <Slide picture = {item.picture} right={!(index % 2)} key={index} label={item.label} />)}
                     {/* <Slide label="Relaxed" />
                     <Slide label="Playfull" right />
                     <Slide label="Excentric" />
@@ -70,21 +110,41 @@ const OnBoarding = () => {
             </Animated.View>
             <View style={styles.footer}>
                 <Animated.View style={{ ...StyleSheet.absoluteFillObject, backgroundColor }}>
-                    <Animated.View style={[styles.footerContainer, { width: width * slides.length, flex: 1, transform: [{ translateX: multiply(x, -1) }] }]}>
-                        {slides.map((item, index) =>
-                            <>
-                                <SubSlide
-                                    onPress = {() => {
-                                        if(scroll.current) {
-                                            scroll.current.getNode().scrollTo({x: width* (index+1), animated: true})
-                                        }
-                                    }}
-                                    key={index}
-                                    last={index === slides.length - 1}
-                                    subLabel={item.subLabel} desc={item.desc}
-                                ></SubSlide>
-                            </>)}
-                    </Animated.View>
+                    <View
+                        style={
+                            styles.footerContainer
+                        }>
+
+                        <View style={styles.pagination}>
+
+                            {slides.map((item, index) =>
+                                <Dot currentIndex={divide(x, width)} key={index} {...{ index }} />
+                            )}
+
+                        </View>
+
+                        <Animated.View style={{
+                            flexDirection: 'row',
+                            width: width * slides.length,
+                            flex: 1,
+                            transform: [{ translateX: multiply(x, -1) }]
+                        }}>
+                            {slides.map((item, index) =>
+                                <>
+                                    <SubSlide
+                                        onPress={() => {
+                                            if (scroll.current) {
+                                                scroll.current.getNode().scrollTo({ x: width * (index + 1), animated: true })
+                                            }
+                                        }}
+                                        key={index}
+                                        last={index === slides.length - 1}
+                                        subLabel={item.subLabel} desc={item.desc}
+                                    ></SubSlide>
+                                </>)}
+                        </Animated.View>
+
+                    </View>
                 </Animated.View>
 
             </View>
