@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: 15,
+        fontWeight: 'bold'
 
     }
 
@@ -25,7 +26,7 @@ interface ButtonProps {
 }
 
 const Button = ({ variant, label, onPress }) => {
-    const backgroundColor = variant === 'primary' ? '#2CB9B0' : 'gray';
+    const backgroundColor = variant === 'primary' ? '#2CB9B0' : '#B4B2B4';
     const color = variant === 'primary' ? 'white' : '#333333';
 
     return (

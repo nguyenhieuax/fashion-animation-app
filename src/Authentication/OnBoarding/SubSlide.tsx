@@ -7,6 +7,7 @@ interface SubSlideProps  {
     subLabel: string;
     desc: string;
     last: boolean;
+    onPress: () => void;
 }
 const styles = StyleSheet.create({
     container: {
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
 
     }
 })
-const SubSlide = ({subLabel, desc, last, x, onPress}) => {
+const SubSlide = ({subLabel, desc, last, onPress}) => {
     return (
         <View style = {styles.container}>
             <Text style = {styles.subLabel}>{subLabel}</Text>
