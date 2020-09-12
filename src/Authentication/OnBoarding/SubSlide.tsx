@@ -1,7 +1,6 @@
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
-import Animated from 'react-native-reanimated';4
-import {Button} from '../../components'
+import { View, StyleSheet } from 'react-native'
+import {Button, Text} from '../../components'
 
 interface SubSlideProps  {
     subLabel: string;
@@ -17,34 +16,26 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     subLabel: {
-        fontFamily: 'SFProText-Bold',
-        fontSize: 24,
+   
         textAlign: 'center',
         marginBottom: 12,
 
     }, 
     desc: {
-        fontFamily: 'SFProText-Regular',
-        fontSize: 16,
-        lineHeight: 24,
         textAlign: 'center',
         marginBottom: 20
-
-
-
     }
 })
-const SubSlide = ({subLabel, desc, last, onPress}) => {
+const SubSlide = ({subLabel, desc, last, onPress}: SubSlideProps) => {
     return (
         <View style = {styles.container}>
-            <Text style = {styles.subLabel}>{subLabel}</Text>
-            <Text style = {styles.desc}>{desc}</Text>
+            <Text variant ='title2' style = {styles.subLabel}>{subLabel}</Text>
+            <Text variant ='body' style = {styles.desc}>{desc}</Text>
             <Button 
             label = {last ? "Let's get started" : "Next"} 
             variant = {last ? 'primary' : 'default'}
             {...{onPress}}
             >
-
             </Button>
         </View>
     )

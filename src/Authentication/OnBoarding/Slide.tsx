@@ -1,6 +1,6 @@
 import React from 'react'
-import { View, Text, Dimensions, StyleSheet, Image } from 'react-native';
-
+import { View, Dimensions, StyleSheet, Image } from 'react-native';
+import {Text} from '../../components';
 
 interface SlideProps {
     label: String;
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 const Slide = ({ label, right, picture }: SlideProps) => {
     const transform = [
         { translateY: (SLIDE_HEIGHT - 100) / 2 },
-        { translateX: (right ? 1 : -1) * width /3 },
+        { translateX: (right ? -1 : 1) * width /3 },
         {rotate: right ? '-90deg': '90deg'}
     ]
     return (
@@ -57,7 +57,8 @@ const Slide = ({ label, right, picture }: SlideProps) => {
                 <Image source = {picture} style = {styles.picture} />
             </View>
             <View style={[styles.titleContainer, { transform }]}>
-                <Text style={styles.title}>{label}</Text>
+                <Text variant = "hero"
+        >{label}</Text>
             </View>
         </View>
     )

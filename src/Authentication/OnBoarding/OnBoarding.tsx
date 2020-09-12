@@ -1,11 +1,11 @@
 import React, { useRef } from 'react'
-import { View, Text, Slider, StyleSheet, Dimensions } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import { useValue, interpolateColor, onScrollEvent, useScrollHandler, scrollHandler } from "react-native-redash";
-import Animated, { interpolate, Value, multiply, divide, sub } from 'react-native-reanimated';
+import Animated, {  multiply, divide,  } from 'react-native-reanimated';
 import Slide, { SLIDE_HEIGHT } from './Slide';
 import SubSlide from './SubSlide';
 import Dot from './Dot';
+import { StackNavigationProps, Routes } from '../../components/navigation';
 
 const { width, height } = Dimensions.get("window");
 
@@ -72,8 +72,10 @@ const slides = [
     },
 ]
 
+export const assetsOnboarding = slides.map(item => item.picture);
 
-const OnBoarding = () => {
+
+const OnBoarding = ({navigation}: StackNavigationProps<Routes, "OnBoarding"> ) => {
 
     const scroll = useRef<Animated.ScrollView>(null);
     //TODO:useScrollEvent
@@ -96,16 +98,11 @@ const OnBoarding = () => {
                     decelerationRate="fast"
                     showsHorizontalScrollIndicator={false}
                     bounces={false}
-                    scrollEventThrottle={1}
+                    // scrollEventThrottle={1}
                     {...scrollHandler}
                 >
                     {slides.map((item, index) => <Slide picture = {item.picture} right={!(index % 2)} key={index} label={item.label} />)}
-                    {/* <Slide label="Relaxed" />
-                    <Slide label="Playfull" right />
-                    <Slide label="Excentric" />
-                    <Slide label="Funky" right /> */}
-
-
+               
                 </Animated.ScrollView>
             </Animated.View>
             <View style={styles.footer}>
@@ -135,6 +132,9 @@ const OnBoarding = () => {
                                         onPress={() => {
                                             if (scroll.current) {
                                                 scroll.current.getNode().scrollTo({ x: width * (index + 1), animated: true })
+                                            }
+                                            if(index === slides.length -1) {
+                                                navigation.navigate('Welcome')
                                             }
                                         }}
                                         key={index}

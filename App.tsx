@@ -1,11 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { OnBoarding } from './src/Authentication/OnBoarding';
-const AuthenticationStack = createStackNavigator();
+import { AuthenticationNavigator } from './src/Authentication'
+import { ThemeProvider } from '@shopify/restyle';
 import { LoadAssets } from './src/components';
-
+import  {theme}  from './src/components/Theme';
+import { assets } from './src/Authentication';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 
 const fonts = {
@@ -14,20 +14,16 @@ const fonts = {
   "SFProText-Regular": require("./assets/fonts/SF-Pro-Text-Regular.otf"),
 };
 
-const AuthenticationNavigator = () => {
-  return (
-    <AuthenticationStack.Navigator headerMode="none">
-      <AuthenticationStack.Screen name="OnBoarding" component={OnBoarding} />
-      <AuthenticationStack.Screen name="Welcome" component={Welcome} />
-    </AuthenticationStack.Navigator>
 
-  )
-
-}
 export default function App() {
   return (
-    <LoadAssets {...{ fonts }}>
-      <AuthenticationNavigator />
-    </LoadAssets>
+    <ThemeProvider theme={theme}>
+      <LoadAssets {...{ fonts, assets }}>
+        <SafeAreaProvider>
+          <AuthenticationNavigator />
+        </SafeAreaProvider>
+      </LoadAssets>
+    </ThemeProvider>
+
   );
 }

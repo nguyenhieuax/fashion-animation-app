@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, Dimensions } from 'react-native'
-import Animated, { Value, interpolate, Extrapolate } from 'react-native-reanimated';
+import Animated, { interpolate, Extrapolate } from 'react-native-reanimated';
 
 
 
@@ -8,8 +8,6 @@ interface DotProps {
     index: number;
     currentIndex: Animated.Node<number>;
 }
-
-const { width, height } = Dimensions.get("window");
 
 
 const Dot = ({ index, currentIndex }: DotProps) => {
